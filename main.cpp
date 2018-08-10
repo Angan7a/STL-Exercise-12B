@@ -11,7 +11,7 @@ auto findPrimes(int m)
 {
     std::vector<int> numbers(m-1);
     std::vector<int> primes;
-    std::iota(numbers.begin(), numbers.end(), 2);
+    std::iota(begin(numbers), end(numbers), 2);
     std::copy_if(begin(numbers), end(numbers),
                  std::back_inserter(primes),
                  [](int candidat){
@@ -34,10 +34,10 @@ auto findDivisors(std::vector<int> primes, std::vector<int> numbers)
     std::map<int,std::vector<int>> map;
     std::vector<int> helperVec;
     std::transform(begin(primes), end(primes),
-                   std::inserter(map, map.begin()),
+                   std::inserter(map, begin(map)),
                    [& numbers, & helperVec](int primeNumber) {
                       helperVec.clear();
-                      std::copy_if(numbers.begin(), numbers.end(),
+                      std::copy_if(begin(numbers), end(numbers),
                                    std::back_inserter(helperVec),
                                    [& primeNumber](int numb) {
                                         return (numb % primeNumber == 0 && numb >= primeNumber); 
@@ -50,11 +50,11 @@ auto findDivisors(std::vector<int> primes, std::vector<int> numbers)
 auto getRandomNumbers(int m, int n)
 {
     std::vector<int> numbers(m+1);
-    std::iota(numbers.begin(), numbers.end(), 0);
+    std::iota(begin(numbers), end(numbers), 0);
     unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
-    std::shuffle(numbers.begin(), numbers.end(), std::default_random_engine(seed));
+    std::shuffle(begin(numbers), end(numbers), std::default_random_engine(seed));
     numbers.resize(n);
-    std::sort(numbers.begin(), numbers.end());
+    std::sort(begin(numbers), end(numbers));
     return numbers;
 }
 
