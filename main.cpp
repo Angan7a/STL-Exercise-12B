@@ -9,24 +9,19 @@
 
 auto findPrimes(int m)
 {
-    std::vector<int> numbers(m-1);
-    std::vector<int> primes;
-    std::iota(begin(numbers), end(numbers), 2);
-    std::copy_if(begin(numbers), end(numbers),
-                 std::back_inserter(primes),
-                 [](int candidat){
-                    std::vector<int> rangeNumbers((candidat-2)/2);
-                    std::vector<bool> isDivisible;
-                    std::iota(begin(rangeNumbers), end(rangeNumbers), 2);
-                    std::transform(begin(rangeNumbers), end(rangeNumbers),
-                                  std::back_inserter(isDivisible),
-                                  [candidat](int number) {
-                                        return candidat % number == 0;
-                                   });
-                    int numbersOfDivisibles = std::count(begin(isDivisible), end(isDivisible), true);
-                    return numbersOfDivisibles == 0? candidat:0;
-                 });
-    return primes;
+    std::vector<int> primes(m-1);
+    std::iota(begin(primes), end(primes), 2);
+    auto iterEnd = end(primes);
+    std::remove_if(begin(primes), iterEnd,
+                   [& iterEnd, & primes](int aPrime){
+                        iterEnd = std::remove_if(begin(primes), iterEnd,
+                                                 [& aPrime](int number){
+                                                        return ((number>aPrime) && (number%aPrime == 0));
+                                                 });
+                        return 0;
+                    });
+   primes.resize(std::distance(begin(primes), iterEnd));
+   return primes;
 }
 
 auto findDivisors(std::vector<int> primes, std::vector<int> numbers)
@@ -66,9 +61,10 @@ int main()
     auto primes = findPrimes(m);
     auto divisors = findDivisors(primes, randomNumbers);
     std::copy(begin(randomNumbers), end(randomNumbers), std::ostream_iterator<int>(std::cout, "  "));
+    std::cout << std::endl;
     for (auto mapDivisors : divisors)
     {
-        std::cout << "\n" << mapDivisors.first << "  - > ";
+        std::cout << "\n" << mapDivisors.first << "  -> ";
         std::copy(begin(mapDivisors.second), end(mapDivisors.second), std::ostream_iterator<int>(std::cout, "  "));
     }
     std::cout << std::endl;
