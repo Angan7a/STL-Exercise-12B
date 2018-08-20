@@ -12,7 +12,7 @@ auto findPrimes(int m)
     std::vector<int> primes(m-1);
     std::iota(begin(primes), end(primes), 2);
     auto iterEnd = end(primes);
-    std::remove_if(begin(primes), iterEnd,
+    std::find_if(begin(primes), iterEnd,
                    [& iterEnd, & primes](int aPrime){
                         iterEnd = std::remove_if(begin(primes), iterEnd,
                                                  [& aPrime](int number){
