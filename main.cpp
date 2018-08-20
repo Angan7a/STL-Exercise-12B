@@ -12,13 +12,12 @@ auto findPrimes(int m)
     std::vector<int> primes(m-1);
     std::iota(begin(primes), end(primes), 2);
     auto iterEnd = end(primes);
-    std::find_if(begin(primes), iterEnd,
+    std::for_each(begin(primes), iterEnd,
                    [& iterEnd, & primes](int aPrime){
                         iterEnd = std::remove_if(begin(primes), iterEnd,
                                                  [& aPrime](int number){
                                                         return ((number>aPrime) && (number%aPrime == 0));
                                                  });
-                        return 0;
                     });
    primes.resize(std::distance(begin(primes), iterEnd));
    return primes;
